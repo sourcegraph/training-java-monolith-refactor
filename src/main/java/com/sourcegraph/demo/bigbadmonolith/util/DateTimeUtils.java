@@ -9,10 +9,6 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-/**
- * Legacy date/time utility class demonstrating old patterns
- * This class contains various anti-patterns for training purposes
- */
 public class DateTimeUtils {
     
     // Static formatters - potential thread safety issues

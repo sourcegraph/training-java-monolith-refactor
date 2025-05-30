@@ -3,7 +3,6 @@
 <%@ page import="com.sourcegraph.demo.bigbadmonolith.entity.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // LEGACY ANTI-PATTERN: Processing form data and DAO instantiation in JSP
     CustomerDAO customerDAO = new CustomerDAO();
     String action = request.getParameter("action");
     String message = "";
@@ -14,7 +13,6 @@
         String address = request.getParameter("address");
         
         try {
-            // LEGACY ANTI-PATTERN: Business logic in JSP - creating entity objects
             Customer customer = new Customer(name, email, address);
             customerDAO.save(customer);
             message = "Customer added successfully!";
@@ -25,7 +23,6 @@
     
     if ("delete".equals(action)) {
         String id = request.getParameter("id");
-        // LEGACY ANTI-PATTERN: No proper validation of input
         try {
             Long customerId = Long.parseLong(id);
             customerDAO.delete(customerId);
@@ -115,10 +112,8 @@
             </thead>
             <tbody>
                 <%
-                    // LEGACY ANTI-PATTERN: Data access logic in JSP using DAO
                     try {
                         List<Customer> customers = customerDAO.findAll();
-                        // LEGACY ANTI-PATTERN: Sorting logic in presentation layer
                         customers.sort((c1, c2) -> c2.getCreatedAt().compareTo(c1.getCreatedAt()));
                         
                         for (Customer customer : customers) {
@@ -140,30 +135,13 @@
                 <%
                         }
                     } catch (Exception e) {
-                        out.println("<tr><td colspan='6'>Error loading customers: " + e.getMessage() + "</td></tr>");
+                        System.out.println("<tr><td colspan='6'>Error loading customers: " + e.getMessage() + "</td></tr>");
                     }
                 %>
             </tbody>
         </table>
         
-        <div style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
-            <h3>🧐 Code Analysis Exercise</h3>
-            <p><strong>Challenge:</strong> This customer management page contains several common legacy web application problems.</p>
-            
-            <h4>🔍 Investigation Areas:</h4>
-            <ul>
-                <li><strong>Data Validation:</strong> What happens if you submit empty or malicious input?</li>
-                <li><strong>Error Exposure:</strong> Notice what error information is shown to users</li>
-                <li><strong>Code Location:</strong> Where is the form processing logic located?</li>
-                <li><strong>Database Access:</strong> How many times is the database accessed per page load?</li>
-                <li><strong>Resource Management:</strong> How are database connections handled?</li>
-            </ul>
-            
-            <h4>💡 Search Hint:</h4>
-            <p>Try: <code>content:"request.getParameter" file:.jsp</code> to see how user input is processed across JSPs.</p>
-            
-            <p><strong>Questions:</strong> How would you separate the concerns here? What layer should handle form validation?</p>
-        </div>
+
     </div>
 </body>
 </html>

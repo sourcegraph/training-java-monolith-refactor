@@ -7,7 +7,6 @@
 <%@ page import="com.sourcegraph.demo.bigbadmonolith.entity.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // LEGACY ANTI-PATTERN: Complex reporting logic and DAO instantiation in JSP
     CustomerDAO customerDAO = new CustomerDAO();
     UserDAO userDAO = new UserDAO();
     BillableHourDAO billableHourDAO = new BillableHourDAO();
@@ -80,16 +79,15 @@
                 <select id="customerId" name="customerId">
                     <option value="">Select Customer</option>
                     <%
-                        // LEGACY ANTI-PATTERN: Data access for form population in JSP
                         try {
                             List<Customer> customers = customerDAO.findAll();
                             for (Customer customer : customers) {
                                 String selected = customer.getId().toString().equals(customerId) ? "selected" : "";
-                                out.println("<option value='" + customer.getId() + "' " + selected + ">" + 
+                                System.out.println("<option value='" + customer.getId() + "' " + selected + ">" + 
                                           customer.getName() + "</option>");
                             }
                         } catch (Exception e) {
-                            out.println("<option value=''>Error loading customers</option>");
+                            System.out.println("<option value=''>Error loading customers</option>");
                         }
                     %>
                 </select>
@@ -110,7 +108,7 @@
                                              "July", "August", "September", "October", "November", "December"};
                         for (int i = 0; i < months.length; i++) {
                             String selected = months[i].equals(month) ? "selected" : "";
-                            out.println("<option value='" + months[i] + "' " + selected + ">" + monthNames[i] + "</option>");
+                            System.out.println("<option value='" + months[i] + "' " + selected + ">" + monthNames[i] + "</option>");
                         }
                     %>
                 </select>
@@ -121,13 +119,11 @@
         </form>
         
         <%
-            // LEGACY ANTI-PATTERN: Massive conditional logic in JSP for different reports
             if ("customer".equals(reportType) && customerId != null && !customerId.trim().isEmpty()) {
         %>
         <div class="report-section">
             <h2>Customer Bill Report</h2>
             <%
-                // LEGACY ANTI-PATTERN: Complex business logic for billing calculations
                 Connection conn = null;
                 PreparedStatement pstmt = null;
                 ResultSet rs = null;
@@ -217,7 +213,7 @@
             
             <%
                 } catch (Exception e) {
-                    out.println("<p>Error generating customer report: " + e.getMessage() + "</p>");
+                    System.out.println("<p>Error generating customer report: " + e.getMessage() + "</p>");
                 } finally {
                     try { if (rs != null) rs.close(); } catch (Exception e) {}
                     try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
@@ -231,7 +227,6 @@
         <div class="report-section">
             <h2>Monthly Summary - <%= month %>/<%= year %></h2>
             <%
-                // LEGACY ANTI-PATTERN: Date manipulation and complex aggregations in JSP
                 Connection conn = null;
                 PreparedStatement pstmt = null;
                 ResultSet rs = null;
@@ -240,7 +235,6 @@
                     Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
                     conn = DriverManager.getConnection(dbUrl);
                     
-                    // LEGACY ANTI-PATTERN: Manual date string construction
                     String startDate = year + "-" + month + "-01";
                     String endDate = year + "-" + month + "-31"; // Simplified - doesn't handle month lengths properly
                     
@@ -297,7 +291,7 @@
             
             <%
                 } catch (Exception e) {
-                    out.println("<p>Error generating monthly report: " + e.getMessage() + "</p>");
+                    System.out.println("<p>Error generating monthly report: " + e.getMessage() + "</p>");
                 } finally {
                     try { if (rs != null) rs.close(); } catch (Exception e) {}
                     try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
@@ -311,7 +305,6 @@
         <div class="report-section">
             <h2>Revenue Summary</h2>
             <%
-                // LEGACY ANTI-PATTERN: Multiple database queries for different metrics
                 Connection conn = null;
                 Statement stmt = null;
                 ResultSet rs = null;
@@ -402,7 +395,7 @@
             
             <%
                 } catch (Exception e) {
-                    out.println("<p>Error generating revenue summary: " + e.getMessage() + "</p>");
+                    System.out.println("<p>Error generating revenue summary: " + e.getMessage() + "</p>");
                 } finally {
                     try { if (rs != null) rs.close(); } catch (Exception e) {}
                     try { if (stmt != null) stmt.close(); } catch (Exception e) {}
@@ -414,34 +407,7 @@
             }
         %>
         
-        <div style="margin-top: 30px; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
-            <h3>🚨 Training Exercise: Identify Legacy Anti-Patterns</h3>
-            <p><strong>Challenge:</strong> This reports module contains multiple architectural issues. Can you spot them?</p>
-            
-            <h4>🔍 Investigation Hints:</h4>
-            <ul>
-                <li><strong>Code Organization:</strong> Look for where business logic, data access, and presentation are located</li>
-                <li><strong>Resource Management:</strong> Examine how database connections are created and closed</li>
-                <li><strong>Security Concerns:</strong> Check how user input is handled and used in database queries</li>
-                <li><strong>Error Handling:</strong> See what happens when things go wrong</li>
-                <li><strong>Performance:</strong> Count how many database queries execute for one page load</li>
-                <li><strong>Maintainability:</strong> Consider what happens when requirements change</li>
-            </ul>
-            
-            <h4>🔬 Sourcegraph Search Example:</h4>
-            <p>Try this search to find potential SQL injection vulnerabilities across the codebase:</p>
-            <code style="background: #f4f4f4; padding: 5px; display: block; margin: 10px 0;">
-                repo:^your-repo$ SELECT.*\+.*request\.getParameter lang:java
-            </code>
-            <p><em>This searches for SQL queries that concatenate user input from request parameters.</em></p>
-            
-            <p><strong>Discussion Questions:</strong></p>
-            <ul>
-                <li>What architectural pattern would better separate these concerns?</li>
-                <li>How could you make this code more testable?</li>
-                <li>What security vulnerabilities do you see?</li>
-            </ul>
-        </div>
+
     </div>
 </body>
 </html>

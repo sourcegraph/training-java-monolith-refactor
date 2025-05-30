@@ -3,7 +3,6 @@
 <%@ page import="com.sourcegraph.demo.bigbadmonolith.entity.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // LEGACY ANTI-PATTERN: Form processing and DAO instantiation in JSP
     UserDAO userDAO = new UserDAO();
     String action = request.getParameter("action");
     String message = "";
@@ -12,13 +11,11 @@
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         
-        // LEGACY ANTI-PATTERN: No input validation
         try {
             User user = new User(name, email);
             userDAO.save(user);
             message = "User added successfully!";
         } catch (Exception e) {
-            // LEGACY ANTI-PATTERN: Exposing technical details to user
             message = "Error adding user: " + e.getMessage();
         }
     }
@@ -94,7 +91,6 @@
             </thead>
             <tbody>
                 <%
-                    // LEGACY ANTI-PATTERN: Complex aggregation logic and multiple DAO calls in JSP
                     BillableHourDAO billableHourDAO = new BillableHourDAO();
                     BillingCategoryDAO categoryDAO = new BillingCategoryDAO();
                     
@@ -103,7 +99,6 @@
                         List<BillableHour> allBillableHours = billableHourDAO.findAll();
                         List<BillingCategory> categories = categoryDAO.findAll();
                         
-                        // LEGACY ANTI-PATTERN: Complex business calculations in presentation layer
                         Map<Long, BillingCategory> categoryMap = new HashMap<>();
                         for (BillingCategory category : categories) {
                             categoryMap.put(category.getId(), category);
@@ -113,7 +108,6 @@
                             double totalHours = 0.0;
                             double totalRevenue = 0.0;
                             
-                            // LEGACY ANTI-PATTERN: Nested loops and calculations in JSP
                             for (BillableHour hour : allBillableHours) {
                                 if (hour.getUserId().equals(user.getId())) {
                                     totalHours += hour.getHours().doubleValue();
@@ -134,30 +128,13 @@
                 <%
                         }
                     } catch (Exception e) {
-                        out.println("<tr><td colspan='5'>Error loading users: " + e.getMessage() + "</td></tr>");
+                        System.out.println("<tr><td colspan='5'>Error loading users: " + e.getMessage() + "</td></tr>");
                     }
                 %>
             </tbody>
         </table>
         
-        <div style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
-            <h3>🎪 Complex Logic Analysis Challenge</h3>
-            <p><strong>Objective:</strong> This user management page showcases multiple layers of complexity that shouldn't exist in presentation code.</p>
-            
-            <h4>🔍 Deep Dive Areas:</h4>
-            <ul>
-                <li><strong>Computational Complexity:</strong> Find where revenue calculations happen and how often</li>
-                <li><strong>Data Aggregation:</strong> Notice the nested loops and multiple DAO calls per user</li>
-                <li><strong>Error Boundaries:</strong> See how exceptions from different layers are handled</li>
-                <li><strong>Resource Lifecycle:</strong> Track database connection creation and cleanup</li>
-                <li><strong>Null Safety:</strong> Examine what happens with missing or null data</li>
-            </ul>
-            
-            <h4>🎯 Search Strategy:</h4>
-            <p>Try: <code>content:"\.executeQuery" context:10 file:.jsp</code> to see database queries with surrounding code context in JSPs.</p>
-            
-            <p><strong>Architecture Puzzle:</strong> What design patterns could eliminate the need for complex calculations in the view layer?</p>
-        </div>
+
     </div>
 </body>
 </html>

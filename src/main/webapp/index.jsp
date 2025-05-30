@@ -3,7 +3,6 @@
 <%@ page import="com.sourcegraph.demo.bigbadmonolith.entity.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // LEGACY ANTI-PATTERN: DAO instantiation and business logic in JSP
     CustomerDAO customerDAO = new CustomerDAO();
     UserDAO userDAO = new UserDAO();
     BillableHourDAO billableHourDAO = new BillableHourDAO();
@@ -14,14 +13,12 @@
     double totalRevenue = 0.0;
     
     try {
-        // LEGACY ANTI-PATTERN: Business logic calculations in presentation layer
         List<Customer> customers = customerDAO.findAll();
         totalCustomers = customers.size();
         
         List<User> users = userDAO.findAll();
         totalUsers = users.size();
         
-        // LEGACY ANTI-PATTERN: Complex revenue calculation in JSP
         List<BillableHour> billableHours = billableHourDAO.findAll();
         List<BillingCategory> categories = categoryDAO.findAll();
         
@@ -40,8 +37,7 @@
         }
         
     } catch (Exception e) {
-        // LEGACY ANTI-PATTERN: Poor error handling
-        out.println("Database error: " + e.getMessage());
+        System.out.println("Database error: " + e.getMessage());
     }
 %>
 <html>
@@ -91,30 +87,7 @@
     
     <div style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
         <h2>Welcome to the Legacy Time Tracker</h2>
-        <p><strong>Training Mission:</strong> This application is a perfect example of how NOT to build modern web applications. Your task is to identify and understand the anti-patterns before learning to fix them.</p>
-        
-        <div style="background: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 5px;">
-            <h3>🎓 Learning Objectives</h3>
-            <p>As you explore each page, look for:</p>
-            <ul>
-                <li><strong>Architectural Issues:</strong> Where is business logic located?</li>
-                <li><strong>Security Vulnerabilities:</strong> How is user input handled?</li>
-                <li><strong>Performance Problems:</strong> When and how often does database access occur?</li>
-                <li><strong>Maintainability Issues:</strong> How hard would it be to make changes?</li>
-                <li><strong>Testing Challenges:</strong> How would you unit test this code?</li>
-            </ul>
-        </div>
-        
-        <div style="background: #e7f3ff; padding: 10px; margin: 10px 0; border-radius: 5px;">
-            <strong>🔬 Pro Tip:</strong> Use Sourcegraph search queries like <code>content:"DriverManager.getConnection" file:.jsp</code> to find database connections in presentation layers across the codebase.
-        </div>
-        
-        <p><strong>Explore the Anti-Patterns:</strong></p>
-        <p>
-            <a href="customers.jsp" style="background: #007acc; color: white; padding: 10px 15px; text-decoration: none; border-radius: 3px;">Customer Management</a>
-            <a href="hours.jsp" style="background: #28a745; color: white; padding: 10px 15px; text-decoration: none; border-radius: 3px; margin-left: 10px;">Hours Logging</a>
-            <a href="reports.jsp" style="background: #ffc107; color: black; padding: 10px 15px; text-decoration: none; border-radius: 3px; margin-left: 10px;">Reporting Module</a>
-        </p>
+
     </div>
 </body>
 </html>

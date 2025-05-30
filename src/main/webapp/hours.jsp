@@ -6,7 +6,6 @@
 <%@ page import="com.sourcegraph.demo.bigbadmonolith.entity.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // LEGACY ANTI-PATTERN: Complex business logic and DAO instantiation in JSP
     BillableHourDAO billableHourDAO = new BillableHourDAO();
     CustomerDAO customerDAO = new CustomerDAO();
     UserDAO userDAO = new UserDAO();
@@ -23,7 +22,6 @@
         String note = request.getParameter("note");
         String dateStr = request.getParameter("date");
         
-        // LEGACY ANTI-PATTERN: Manual validation in JSP
         boolean isValid = true;
         StringBuilder errors = new StringBuilder();
         
@@ -46,7 +44,6 @@
         
         if (isValid) {
             try {
-                // LEGACY ANTI-PATTERN: Date parsing and entity creation in JSP
                 LocalDate logDate;
                 if (dateStr != null && !dateStr.trim().isEmpty()) {
                     logDate = LocalDate.parse(dateStr);
@@ -54,7 +51,6 @@
                     logDate = LocalDate.now();
                 }
                 
-                // LEGACY ANTI-PATTERN: Manual entity creation in JSP
                 Long customerId = Long.parseLong(customerIdStr);
                 Long userId = Long.parseLong(userIdStr);
                 Long categoryId = Long.parseLong(categoryIdStr);
@@ -127,15 +123,14 @@
                 <select id="customerId" name="customerId" required>
                     <option value="">Select Customer</option>
                     <%
-                        // LEGACY ANTI-PATTERN: Data access in JSP for dropdown population
                         try {
                             List<Customer> customers = customerDAO.findAll();
                             for (Customer customer : customers) {
-                                out.println("<option value='" + customer.getId() + "'>" + 
+                                System.out.println("<option value='" + customer.getId() + "'>" + 
                                           customer.getName() + "</option>");
                             }
                         } catch (Exception e) {
-                            out.println("<option value=''>Error loading customers</option>");
+                            System.out.println("<option value=''>Error loading customers</option>");
                         }
                     %>
                 </select>
@@ -149,11 +144,11 @@
                         try {
                             List<User> users = userDAO.findAll();
                             for (User user : users) {
-                                out.println("<option value='" + user.getId() + "'>" + 
+                                System.out.println("<option value='" + user.getId() + "'>" + 
                                           user.getName() + "</option>");
                             }
                         } catch (Exception e) {
-                            out.println("<option value=''>Error loading users</option>");
+                            System.out.println("<option value=''>Error loading users</option>");
                         }
                     %>
                 </select>
@@ -167,11 +162,11 @@
                         try {
                             List<BillingCategory> categories = categoryDAO.findAll();
                             for (BillingCategory category : categories) {
-                                out.println("<option value='" + category.getId() + "'>" + 
+                                System.out.println("<option value='" + category.getId() + "'>" + 
                                           category.getName() + " ($" + category.getHourlyRate() + "/hr)</option>");
                             }
                         } catch (Exception e) {
-                            out.println("<option value=''>Error loading categories</option>");
+                            System.out.println("<option value=''>Error loading categories</option>");
                         }
                     %>
                 </select>
@@ -211,14 +206,12 @@
             </thead>
             <tbody>
                 <%
-                    // LEGACY ANTI-PATTERN: Complex join logic and multiple DAO calls in JSP
                     try {
                         List<BillableHour> recentHours = billableHourDAO.findAll();
                         List<Customer> customers = customerDAO.findAll();
                         List<User> users = userDAO.findAll();
                         List<BillingCategory> categories = categoryDAO.findAll();
                         
-                        // LEGACY ANTI-PATTERN: Building lookup maps in JSP
                         Map<Long, Customer> customerMap = new HashMap<>();
                         Map<Long, User> userMap = new HashMap<>();
                         Map<Long, BillingCategory> categoryMap = new HashMap<>();
@@ -233,7 +226,6 @@
                             categoryMap.put(category.getId(), category);
                         }
                         
-                        // LEGACY ANTI-PATTERN: Sorting and limiting in JSP
                         recentHours.sort((h1, h2) -> {
                             int dateCompare = h2.getDateLogged().compareTo(h1.getDateLogged());
                             if (dateCompare != 0) return dateCompare;
@@ -266,30 +258,13 @@
                             }
                         }
                     } catch (Exception e) {
-                        out.println("<tr><td colspan='8'>Error loading recent hours: " + e.getMessage() + "</td></tr>");
+                        System.out.println("<tr><td colspan='8'>Error loading recent hours: " + e.getMessage() + "</td></tr>");
                     }
                 %>
             </tbody>
         </table>
         
-        <div style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
-            <h3>⚡ Performance & Architecture Analysis</h3>
-            <p><strong>Mission:</strong> This hours logging page demonstrates complex business logic mixed with presentation concerns.</p>
-            
-            <h4>🔍 Key Areas to Examine:</h4>
-            <ul>
-                <li><strong>Query Efficiency:</strong> Count how many database queries run to display this page</li>
-                <li><strong>Business Logic Location:</strong> Find where hours calculations and lookups are performed</li>
-                <li><strong>Data Transformation:</strong> Notice how raw database results become display data</li>
-                <li><strong>Memory Usage:</strong> See what data structures are built in memory</li>
-                <li><strong>Error Propagation:</strong> Trace what happens when database operations fail</li>
-            </ul>
-            
-            <h4>🔬 Advanced Search:</h4>
-            <p>Use: <code>content:"new.*DAO\\(\\)" file:.jsp</code> to find where Data Access Objects are instantiated in presentation layers.</p>
-            
-            <p><strong>Design Question:</strong> How could you move this logic into proper service layers while maintaining the same functionality?</p>
-        </div>
+
     </div>
 </body>
 </html>

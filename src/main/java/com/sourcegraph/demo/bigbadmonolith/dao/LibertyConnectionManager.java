@@ -7,10 +7,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Liberty-specific connection manager that uses JNDI data sources
- * This is a more enterprise-appropriate approach for Liberty deployment
- */
 public class LibertyConnectionManager {
     private static final String JNDI_NAME = "jdbc/DefaultDataSource";
     private static DataSource dataSource;

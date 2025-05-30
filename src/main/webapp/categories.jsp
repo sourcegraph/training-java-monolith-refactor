@@ -4,7 +4,6 @@
 <%@ page import="com.sourcegraph.demo.bigbadmonolith.entity.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // LEGACY ANTI-PATTERN: All business logic and DAO instantiation in JSP
     BillingCategoryDAO categoryDAO = new BillingCategoryDAO();
     String action = request.getParameter("action");
     String message = "";
@@ -15,7 +14,6 @@
         String hourlyRateStr = request.getParameter("hourlyRate");
         
         try {
-            // LEGACY ANTI-PATTERN: No proper validation or sanitization
             BigDecimal hourlyRate = new BigDecimal(hourlyRateStr);
             BillingCategory category = new BillingCategory(name, description, hourlyRate);
             categoryDAO.save(category);
@@ -32,7 +30,6 @@
         String hourlyRateStr = request.getParameter("newRate");
         
         try {
-            // LEGACY ANTI-PATTERN: Business logic in JSP with manual entity updates
             Long categoryId = Long.parseLong(id);
             BigDecimal newRate = new BigDecimal(hourlyRateStr);
             
@@ -133,21 +130,18 @@
             </thead>
             <tbody>
                 <%
-                    // LEGACY ANTI-PATTERN: Multiple DAO calls and complex aggregations in JSP
                     BillableHourDAO billableHourDAO = new BillableHourDAO();
                     
                     try {
                         List<BillingCategory> categories = categoryDAO.findAll();
                         List<BillableHour> allBillableHours = billableHourDAO.findAll();
                         
-                        // LEGACY ANTI-PATTERN: Sorting logic in presentation layer
                         categories.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
                         
                         for (BillingCategory category : categories) {
                             double totalHours = 0.0;
                             double totalRevenue = 0.0;
                             
-                            // LEGACY ANTI-PATTERN: Business calculations in JSP
                             for (BillableHour hour : allBillableHours) {
                                 if (hour.getCategoryId().equals(category.getId())) {
                                     totalHours += hour.getHours().doubleValue();
@@ -163,7 +157,6 @@
                         <td><%= String.format("%.2f", totalHours) %></td>
                         <td>$<%= String.format("%.2f", totalRevenue) %></td>
                         <td>
-                            <!-- LEGACY ANTI-PATTERN: Inline form processing -->
                             <form method="post" action="categories.jsp" class="inline-form">
                                 <input type="hidden" name="action" value="update">
                                 <input type="hidden" name="id" value="<%= category.getId() %>">
@@ -175,30 +168,13 @@
                 <%
                         }
                     } catch (Exception e) {
-                        out.println("<tr><td colspan='7'>Error loading categories: " + e.getMessage() + "</td></tr>");
+                        System.out.println("<tr><td colspan='7'>Error loading categories: " + e.getMessage() + "</td></tr>");
                     }
                 %>
             </tbody>
         </table>
         
-        <div style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
-            <h3>🎯 Training Challenge: Spot the Issues</h3>
-            <p><strong>Exercise:</strong> This billing categories page has several problems waiting to be discovered!</p>
-            
-            <h4>🔍 What to Look For:</h4>
-            <ul>
-                <li><strong>Security:</strong> Find where user input goes directly into database operations</li>
-                <li><strong>Architecture:</strong> Notice what types of code are mixed together in this file</li>
-                <li><strong>Error Handling:</strong> See what users experience when something breaks</li>
-                <li><strong>Data Flow:</strong> Trace how data moves from form to database</li>
-                <li><strong>Validation:</strong> Check if user input is properly validated</li>
-            </ul>
-            
-            <h4>💡 Sourcegraph Search Tips:</h4>
-            <p>Use searches like <code>file:.jsp content:"stmt.executeUpdate"</code> to find where JSPs execute database operations.</p>
-            
-            <p><strong>Think About:</strong> How would you restructure this to be more secure and maintainable?</p>
-        </div>
+
     </div>
 </body>
 </html>
