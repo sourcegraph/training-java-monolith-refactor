@@ -1,0 +1,23 @@
+# JVM options for Liberty server
+-Xmx512m
+-Xms256m
+
+# Debug options are handled by libertyDev task
+# Uncomment the lines below only when running with libertyStart (not libertyDev)
+# -Xdebug
+# -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=7777
+
+# Derby system properties
+-Dderby.system.home=${server.output.dir}/derby-system
+-Dderby.stream.error.file=${server.output.dir}/logs/derby.log
+
+# Application-specific system properties
+-Dapp.environment=development
+-Dfile.encoding=UTF-8
+
+# Disable Derby network server (we're using embedded)
+-Dderby.drda.startNetworkServer=false
+
+# Enable Derby SQL logging for development
+-Dderby.language.logStatementText=true
+-Dderby.language.logQueryPlan=true

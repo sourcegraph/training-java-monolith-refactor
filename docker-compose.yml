@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  big-bad-monolith:
+    build: .
+    ports:
+      - "9080:9080"
+      - "9443:9443"
+      - "7777:7777"  # Debug port
+    environment:
+      - WLP_LOGGING_CONSOLE_FORMAT=SIMPLE
+      - WLP_LOGGING_CONSOLE_LOG_LEVEL=INFO
+    volumes:
+      - derby-data:/opt/ol/wlp/output/defaultServer/data
+      - derby-logs:/opt/ol/wlp/output/defaultServer/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9080/big-bad-monolith/api/users"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    
+volumes:
+  derby-data:
+    driver: local
+  derby-logs:
+    driver: local

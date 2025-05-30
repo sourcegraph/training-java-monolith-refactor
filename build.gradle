@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'war'
+    id 'io.openliberty.tools.gradle.Liberty' version '3.8.2'
 }
 
 group 'com.sourcegraph.demo'
@@ -23,15 +24,14 @@ tasks.withType(JavaCompile) {
 
 dependencies {
     compileOnly('jakarta.enterprise:jakarta.enterprise.cdi-api:4.1.0')
-    compileOnly('jakarta.data:jakarta.data-api:1.0.0')
     compileOnly('jakarta.servlet:jakarta.servlet-api:6.1.0')
-    implementation('org.glassfish.jersey.containers:jersey-container-servlet:4.0.0-M1')
-    implementation('org.glassfish.jersey.media:jersey-media-json-jackson:4.0.0-M1')
-    implementation('org.glassfish.jersey.inject:jersey-cdi2-se:4.0.0-M1')
     
     // Derby database
     implementation('org.apache.derby:derby:10.17.1.0')
     implementation('org.apache.derby:derbytools:10.17.1.0')
+    
+    // Joda-Time for legacy datetime handling
+    implementation('joda-time:joda-time:2.12.5')
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
@@ -39,4 +39,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+// Liberty configuration
+liberty {
+    server {
+        name = 'defaultServer'
+        configDirectory = file('src/main/liberty/config')
+    }
 }

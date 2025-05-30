@@ -8,11 +8,13 @@ import java.util.List;
 public class UserDAO {
     
     public User save(User user) {
+        // LEGACY ANTI-PATTERN: No null checks - will throw NPE if user is null
         String sql = "INSERT INTO users (email, name) VALUES (?, ?)";
         
-        try (Connection conn = ConnectionManager.getConnection();
+        try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
+            // LEGACY ANTI-PATTERN: Will throw NPE if user.getEmail() or user.getName() are called on null user
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getName());
             
@@ -38,7 +40,7 @@ public class UserDAO {
     public User findById(Long id) {
         String sql = "SELECT id, email, name FROM users WHERE id = ?";
         
-        try (Connection conn = ConnectionManager.getConnection();
+        try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setLong(1, id);
@@ -62,7 +64,7 @@ public class UserDAO {
     public User findByEmail(String email) {
         String sql = "SELECT id, email, name FROM users WHERE email = ?";
         
-        try (Connection conn = ConnectionManager.getConnection();
+        try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, email);
@@ -87,7 +89,7 @@ public class UserDAO {
         String sql = "SELECT id, email, name FROM users ORDER BY id";
         List<User> users = new ArrayList<>();
         
-        try (Connection conn = ConnectionManager.getConnection();
+        try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             
@@ -109,7 +111,7 @@ public class UserDAO {
     public boolean delete(Long id) {
         String sql = "DELETE FROM users WHERE id = ?";
         
-        try (Connection conn = ConnectionManager.getConnection();
+        try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setLong(1, id);
@@ -121,11 +123,13 @@ public class UserDAO {
     }
     
     public User update(User user) {
+        // LEGACY ANTI-PATTERN: No null checks - will throw NPE if user is null
         String sql = "UPDATE users SET email = ?, name = ? WHERE id = ?";
         
-        try (Connection conn = ConnectionManager.getConnection();
+        try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
+            // LEGACY ANTI-PATTERN: Will throw NPE if any getter is called on null user
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getName());
             stmt.setLong(3, user.getId());

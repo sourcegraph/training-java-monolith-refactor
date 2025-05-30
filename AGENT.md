@@ -8,6 +8,19 @@
 - **Compile only**: `./gradlew compileJava`
 - **Generate WAR**: `./gradlew war`
 
+## Liberty Server Commands
+- **Start Liberty dev mode**: `./liberty-dev.sh` (Linux/macOS) or `liberty-dev.bat` (Windows)
+- **Start Liberty server**: `./gradlew libertyStart`
+- **Stop Liberty server**: `./gradlew libertyStop`
+- **Deploy to Liberty**: `./gradlew libertyDeploy`
+- **Check server status**: `./gradlew libertyStatus`
+
+## Docker Commands
+- **Build and run**: `docker-compose up --build`
+- **Run in background**: `docker-compose up -d`
+- **Stop containers**: `docker-compose down`
+- **View logs**: `docker-compose logs -f`
+
 ## Code Style Guidelines
 - **Java 17** project with Jakarta EE and JAX-RS
 - **Package structure**: `com.sourcegraph.demo.bigbadmonolith`

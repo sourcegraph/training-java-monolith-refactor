@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Big Bad Monolith Billing Platform">
+
+    <!-- Enable the following features -->
+    <featureManager>
+        <feature>jakartaee-10.0</feature>
+        <feature>microProfile-6.0</feature>
+    </featureManager>
+
+    <!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
+
+    <!-- For the purposes of this sample, the keystore creates a default keystore to use with the httpEndpoint -->
+    <keyStore id="defaultKeyStore" password="password" />
+
+    <!-- Define an HTTP endpoint -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="9080"
+                  httpsPort="9443" />
+
+    <!-- Automatically expand applications -->
+    <applicationManager autoExpand="true"/>
+
+    <!-- Define the application -->
+    <webApplication id="big-bad-monolith" 
+                    location="big-bad-monolith-1.0-SNAPSHOT.war" 
+                    contextRoot="/big-bad-monolith">
+        <application-bnd>
+            <security-role name="users">
+                <user name="user1" />
+            </security-role>
+        </application-bnd>
+    </webApplication>
+
+    <!-- Define a basic user registry for development -->
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user1" password="password" />
+    </basicRegistry>
+
+    <!-- Enable application security -->
+    <applicationSecurity allowFailOverToBasicAuth="true"/>
+
+    <!-- Configure logging -->
+    <logging traceSpecification="*=info:com.sourcegraph.demo.bigbadmonolith.*=all" 
+             maxFileSize="20" 
+             maxFiles="10" />
+
+    <!-- Derby database library configuration -->
+    <library id="derbyLib">
+        <fileset dir="${server.config.dir}/derby" includes="*.jar"/>
+    </library>
+
+    <!-- Data source configuration for Derby -->
+    <dataSource id="DefaultDataSource" jndiName="jdbc/DefaultDataSource">
+        <jdbcDriver libraryRef="derbyLib"/>
+        <properties.derby.embedded databaseName="${server.output.dir}/data/bigbadmonolith" 
+                                   createDatabase="create" 
+                                   user="app" 
+                                   password="app"/>
+    </dataSource>
+
+    <!-- Connection manager settings -->
+    <connectionManager id="DefaultConnectionManager" 
+                       maxPoolSize="10" 
+                       minPoolSize="1"/>
+
+    <!-- Enable development mode for easier debugging -->
+    <variable name="default.http.port" defaultValue="9080"/>
+    <variable name="default.https.port" defaultValue="9443"/>
+
+</server>

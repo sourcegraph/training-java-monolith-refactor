@@ -1,29 +1,54 @@
 package com.sourcegraph.demo.bigbadmonolith.dao;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ConnectionManager {
-    private static final String DB_URL = "jdbc:derby:./data/bigbadmonolith;create=true";
-    private static final String DB_USER = "app";
-    private static final String DB_PASSWORD = "app";
+/**
+ * Liberty-specific connection manager that uses JNDI data sources
+ * This is a more enterprise-appropriate approach for Liberty deployment
+ */
+public class LibertyConnectionManager {
+    private static final String JNDI_NAME = "jdbc/DefaultDataSource";
+    private static DataSource dataSource;
     
     static {
         try {
-            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-            initializeDatabase();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Derby driver not found", e);
+            initializeDataSource();
+        } catch (Exception e) {
+            // Fall back to embedded ConnectionManager for development
+            System.err.println("Failed to initialize Liberty DataSource, falling back to embedded Derby: " + e.getMessage());
         }
     }
     
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    private static void initializeDataSource() throws NamingException {
+        InitialContext ctx = new InitialContext();
+        dataSource = (DataSource) ctx.lookup(JNDI_NAME);
+        System.out.println("Successfully initialized Liberty DataSource from JNDI: " + JNDI_NAME);
     }
     
-    private static void initializeDatabase() {
+    public static Connection getConnection() throws SQLException {
+        if (dataSource != null) {
+            return dataSource.getConnection();
+        } else {
+            // Fall back to embedded ConnectionManager
+            return ConnectionManager.getConnection();
+        }
+    }
+    
+    public static boolean isLibertyDataSourceAvailable() {
+        return dataSource != null;
+    }
+    
+    // Initialize database schema if using Liberty DataSource
+    public static void initializeDatabaseSchema() {
+        if (!isLibertyDataSourceAvailable()) {
+            return; // Let the embedded ConnectionManager handle this
+        }
+        
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
             
@@ -83,7 +108,10 @@ public class ConnectionManager {
             createTableIfNotExists(stmt, createBillingCategoriesTableSQL);
             createTableIfNotExists(stmt, createBillableHoursTableSQL);
             
+            System.out.println("Database schema initialized successfully via Liberty DataSource");
+            
         } catch (SQLException e) {
+            System.err.println("Failed to initialize database schema via Liberty DataSource: " + e.getMessage());
             throw new RuntimeException("Failed to initialize database", e);
         }
     }
@@ -96,14 +124,6 @@ public class ConnectionManager {
             if (!e.getSQLState().equals("X0Y32")) {
                 throw e;
             }
-        }
-    }
-    
-    public static void shutdown() {
-        try {
-            DriverManager.getConnection("jdbc:derby:;shutdown=true");
-        } catch (SQLException e) {
-            // Expected exception on shutdown
         }
     }
 }
