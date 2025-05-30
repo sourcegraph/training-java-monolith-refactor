@@ -37,7 +37,7 @@
         }
         
     } catch (Exception e) {
-        System.out.println("Database error: " + e.getMessage());
+        out.println("Database error: " + e.getMessage());
     }
 %>
 <html>

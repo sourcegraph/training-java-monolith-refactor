@@ -128,7 +128,7 @@
                 <%
                         }
                     } catch (Exception e) {
-                        System.out.println("<tr><td colspan='5'>Error loading users: " + e.getMessage() + "</td></tr>");
+                        out.println("<tr><td colspan='5'>Error loading users: " + e.getMessage() + "</td></tr>");
                     }
                 %>
             </tbody>

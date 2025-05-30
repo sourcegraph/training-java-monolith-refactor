@@ -126,11 +126,11 @@
                         try {
                             List<Customer> customers = customerDAO.findAll();
                             for (Customer customer : customers) {
-                                System.out.println("<option value='" + customer.getId() + "'>" + 
+                                out.println("<option value='" + customer.getId() + "'>" + 
                                           customer.getName() + "</option>");
                             }
                         } catch (Exception e) {
-                            System.out.println("<option value=''>Error loading customers</option>");
+                            out.println("<option value=''>Error loading customers</option>");
                         }
                     %>
                 </select>
@@ -144,11 +144,11 @@
                         try {
                             List<User> users = userDAO.findAll();
                             for (User user : users) {
-                                System.out.println("<option value='" + user.getId() + "'>" + 
+                                out.println("<option value='" + user.getId() + "'>" + 
                                           user.getName() + "</option>");
                             }
                         } catch (Exception e) {
-                            System.out.println("<option value=''>Error loading users</option>");
+                            out.println("<option value=''>Error loading users</option>");
                         }
                     %>
                 </select>
@@ -162,11 +162,11 @@
                         try {
                             List<BillingCategory> categories = categoryDAO.findAll();
                             for (BillingCategory category : categories) {
-                                System.out.println("<option value='" + category.getId() + "'>" + 
+                                out.println("<option value='" + category.getId() + "'>" + 
                                           category.getName() + " ($" + category.getHourlyRate() + "/hr)</option>");
                             }
                         } catch (Exception e) {
-                            System.out.println("<option value=''>Error loading categories</option>");
+                            out.println("<option value=''>Error loading categories</option>");
                         }
                     %>
                 </select>
@@ -258,7 +258,7 @@
                             }
                         }
                     } catch (Exception e) {
-                        System.out.println("<tr><td colspan='8'>Error loading recent hours: " + e.getMessage() + "</td></tr>");
+                        out.println("<tr><td colspan='8'>Error loading recent hours: " + e.getMessage() + "</td></tr>");
                     }
                 %>
             </tbody>

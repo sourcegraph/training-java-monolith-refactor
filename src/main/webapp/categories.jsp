@@ -168,7 +168,7 @@
                 <%
                         }
                     } catch (Exception e) {
-                        System.out.println("<tr><td colspan='7'>Error loading categories: " + e.getMessage() + "</td></tr>");
+                        out.println("<tr><td colspan='7'>Error loading categories: " + e.getMessage() + "</td></tr>");
                     }
                 %>
             </tbody>

@@ -83,11 +83,11 @@
                             List<Customer> customers = customerDAO.findAll();
                             for (Customer customer : customers) {
                                 String selected = customer.getId().toString().equals(customerId) ? "selected" : "";
-                                System.out.println("<option value='" + customer.getId() + "' " + selected + ">" + 
+                                out.println("<option value='" + customer.getId() + "' " + selected + ">" + 
                                           customer.getName() + "</option>");
                             }
                         } catch (Exception e) {
-                            System.out.println("<option value=''>Error loading customers</option>");
+                            out.println("<option value=''>Error loading customers</option>");
                         }
                     %>
                 </select>
@@ -108,7 +108,7 @@
                                              "July", "August", "September", "October", "November", "December"};
                         for (int i = 0; i < months.length; i++) {
                             String selected = months[i].equals(month) ? "selected" : "";
-                            System.out.println("<option value='" + months[i] + "' " + selected + ">" + monthNames[i] + "</option>");
+                            out.println("<option value='" + months[i] + "' " + selected + ">" + monthNames[i] + "</option>");
                         }
                     %>
                 </select>
@@ -213,7 +213,7 @@
             
             <%
                 } catch (Exception e) {
-                    System.out.println("<p>Error generating customer report: " + e.getMessage() + "</p>");
+                    out.println("<p>Error generating customer report: " + e.getMessage() + "</p>");
                 } finally {
                     try { if (rs != null) rs.close(); } catch (Exception e) {}
                     try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
@@ -291,7 +291,7 @@
             
             <%
                 } catch (Exception e) {
-                    System.out.println("<p>Error generating monthly report: " + e.getMessage() + "</p>");
+                    out.println("<p>Error generating monthly report: " + e.getMessage() + "</p>");
                 } finally {
                     try { if (rs != null) rs.close(); } catch (Exception e) {}
                     try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
@@ -395,7 +395,7 @@
             
             <%
                 } catch (Exception e) {
-                    System.out.println("<p>Error generating revenue summary: " + e.getMessage() + "</p>");
+                    out.println("<div class='error'>Error generating revenue summary: " + e.getMessage() + "</div>");
                 } finally {
                     try { if (rs != null) rs.close(); } catch (Exception e) {}
                     try { if (stmt != null) stmt.close(); } catch (Exception e) {}
