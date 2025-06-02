@@ -22,13 +22,11 @@
         List<BillableHour> billableHours = billableHourDAO.findAll();
         List<BillingCategory> categories = categoryDAO.findAll();
         
-        // Create a map for quick category lookup
         Map<Long, BillingCategory> categoryMap = new HashMap<>();
         for (BillingCategory category : categories) {
             categoryMap.put(category.getId(), category);
         }
         
-        // Calculate total revenue
         for (BillableHour hour : billableHours) {
             BillingCategory category = categoryMap.get(hour.getCategoryId());
             if (category != null && hour.getHours() != null) {

@@ -11,12 +11,10 @@ import java.text.SimpleDateFormat;
 
 public class DateTimeUtils {
     
-    // Static formatters
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd");
     private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     private static final SimpleDateFormat LEGACY_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
     
-    // Mixed usage of different date libraries
     public static String formatDateLegacy(LocalDate date) {
         if (date == null) {
             return "";
@@ -30,7 +28,6 @@ public class DateTimeUtils {
     }
     
     public static String formatDateTimeVerbose(DateTime dateTime) {
-        // Overly verbose and inefficient
         if (dateTime != null) {
             try {
                 String year = String.valueOf(dateTime.getYear());
@@ -47,7 +44,6 @@ public class DateTimeUtils {
         }
     }
     
-    // Mixing old and new date APIs
     public static java.util.Date convertToJavaUtilDate(DateTime jodaDateTime) {
         return new java.util.Date(jodaDateTime.getMillis());
     }
@@ -60,7 +56,6 @@ public class DateTimeUtils {
         return new Date(localDate.toDateTimeAtStartOfDay().getMillis());
     }
     
-    // Business logic mixed with utility methods
     public static boolean isWorkingDay(LocalDate date) {
         int dayOfWeek = date.getDayOfWeek();
         return dayOfWeek >= 1 && dayOfWeek <= 5;

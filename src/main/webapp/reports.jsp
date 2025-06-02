@@ -16,8 +16,7 @@
     String customerId = request.getParameter("customerId");
     String month = request.getParameter("month");
     String year = request.getParameter("year");
-    
-    // Database connection URL for legacy JDBC code
+
     String dbUrl = "jdbc:derby:./data/bigbadmonolith;create=true";
     
     DecimalFormat df = new DecimalFormat("#,##0.00");
@@ -137,7 +136,6 @@
                     Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
                     conn = DriverManager.getConnection(dbUrl);
                     
-                    // Get customer info
                     pstmt = conn.prepareStatement("SELECT name, email FROM customers WHERE id = ?");
                     pstmt.setInt(1, Integer.parseInt(customerId));
                     rs = pstmt.executeQuery();
@@ -149,7 +147,6 @@
                     rs.close();
                     pstmt.close();
                     
-                    // Get billing details
                     pstmt = conn.prepareStatement(
                         "SELECT bh.date_logged, u.name as user_name, bc.name as category_name, " +
                         "bh.hours, bc.hourly_rate, bh.hours * bc.hourly_rate as line_total, bh.note " +
@@ -236,7 +233,7 @@
                     conn = DriverManager.getConnection(dbUrl);
                     
                     String startDate = year + "-" + month + "-01";
-                    String endDate = year + "-" + month + "-31"; // Simplified - doesn't handle month lengths properly
+                    String endDate = year + "-" + month + "-31";
                     
                     pstmt = conn.prepareStatement(
                         "SELECT c.name as customer_name, " +

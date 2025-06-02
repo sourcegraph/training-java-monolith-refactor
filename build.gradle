@@ -34,7 +34,6 @@ dependencies {
     implementation('org.apache.commons:commons-dbcp2:2.11.0')
     implementation('org.apache.commons:commons-pool2:2.12.0')
 
-    // Joda-Time for legacy datetime handling
     implementation('joda-time:joda-time:2.12.5')
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")

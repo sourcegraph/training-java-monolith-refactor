@@ -22,10 +22,9 @@ public class DataInitializationService {
     private BillableHourDAO billableHourDAO = new BillableHourDAO();
     
     public void initializeSampleData() throws SQLException {
-        // Check if data already exists
         List<User> existingUsers = userDAO.findAll();
         if (!existingUsers.isEmpty()) {
-            return; // Data already initialized
+            return;
         }
         
         // Create sample users
