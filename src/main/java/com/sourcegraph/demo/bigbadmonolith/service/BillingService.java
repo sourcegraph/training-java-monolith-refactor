@@ -85,7 +85,7 @@ public class BillingService {
         return report;
     }
     
-    // This method intentionally has poor error handling for training purposes
+
     public String validateBillableHour(BillableHour hour) {
         String validationErrors = "";
         

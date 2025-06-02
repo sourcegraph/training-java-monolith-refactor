@@ -11,19 +11,16 @@ import java.util.List;
 public class BillableHourDAO {
     
     public BillableHour save(BillableHour billableHour) throws SQLException {
-        // LEGACY ANTI-PATTERN: No null checks - will throw NPE if billableHour is null
         String sql = "INSERT INTO billable_hours (customer_id, user_id, category_id, hours, note, date_logged, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
-            // LEGACY ANTI-PATTERN: Will throw NPE if billableHour is null or any of its properties are null
             stmt.setLong(1, billableHour.getCustomerId());
             stmt.setLong(2, billableHour.getUserId());
             stmt.setLong(3, billableHour.getCategoryId());
             stmt.setBigDecimal(4, billableHour.getHours());
             stmt.setString(5, billableHour.getNote());
-            // LEGACY ANTI-PATTERN: Will throw NPE if getDateLogged() returns null
             stmt.setDate(6, new Date(billableHour.getDateLogged().toDateTimeAtStartOfDay().getMillis()));
             stmt.setTimestamp(7, new Timestamp((billableHour.getCreatedAt() != null ? billableHour.getCreatedAt() : DateTime.now()).getMillis()));
             
@@ -104,19 +101,16 @@ public class BillableHourDAO {
     }
     
     public boolean update(BillableHour billableHour) throws SQLException {
-        // LEGACY ANTI-PATTERN: No null checks - will throw NPE if billableHour is null
         String sql = "UPDATE billable_hours SET customer_id = ?, user_id = ?, category_id = ?, hours = ?, note = ?, date_logged = ? WHERE id = ?";
         
         try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            // LEGACY ANTI-PATTERN: Will throw NPE if billableHour is null or any properties are null
             stmt.setLong(1, billableHour.getCustomerId());
             stmt.setLong(2, billableHour.getUserId());
             stmt.setLong(3, billableHour.getCategoryId());
             stmt.setBigDecimal(4, billableHour.getHours());
             stmt.setString(5, billableHour.getNote());
-            // LEGACY ANTI-PATTERN: Will throw NPE if getDateLogged() or getId() returns null
             stmt.setDate(6, new Date(billableHour.getDateLogged().toDateTimeAtStartOfDay().getMillis()));
             stmt.setLong(7, billableHour.getId());
             

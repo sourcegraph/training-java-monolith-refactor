@@ -10,7 +10,6 @@ import java.util.List;
 public class CustomerDAO {
     
     public Customer save(Customer customer) throws SQLException {
-        // GOOD PRACTICE: Proper null validation
         if (customer == null) {
             throw new IllegalArgumentException("Customer cannot be null");
         }
@@ -74,7 +73,6 @@ public class CustomerDAO {
     }
     
     public boolean update(Customer customer) throws SQLException {
-        // GOOD PRACTICE: Proper null validation
         if (customer == null) {
             throw new IllegalArgumentException("Customer cannot be null");
         }

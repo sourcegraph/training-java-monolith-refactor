@@ -53,7 +53,7 @@ public class DataInitializationService {
                 new BigDecimal("6.75"), "Database schema design and implementation", LocalDate.now().minusDays(2)));
         
         billableHourDAO.save(new BillableHour(customer2.getId(), user2.getId(), supportCategory.getId(), 
-                new BigDecimal("2.25"), "Bug fix in payment processing", LocalDate.now().minusDays(1)));
+                new BigDecimal("2.25"), "Payment processing support", LocalDate.now().minusDays(1)));
         
         billableHourDAO.save(new BillableHour(customer3.getId(), user1.getId(), consultingCategory.getId(), 
                 new BigDecimal("3.50"), "Architecture review and recommendations", LocalDate.now()));

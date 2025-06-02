@@ -10,18 +10,15 @@ import java.util.List;
 public class BillingCategoryDAO {
     
     public BillingCategory save(BillingCategory category) throws SQLException {
-        // MIXED APPROACH: Some null checks but not comprehensive
         if (category == null) {
             throw new IllegalArgumentException("Category cannot be null");
         }
-        // LEGACY ANTI-PATTERN: Missing null checks for name and hourly rate
         
         String sql = "INSERT INTO billing_categories (name, description, hourly_rate) VALUES (?, ?, ?)";
         
         try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
-            // LEGACY ANTI-PATTERN: Will throw NPE if getName() or getHourlyRate() returns null
             stmt.setString(1, category.getName());
             stmt.setString(2, category.getDescription());
             stmt.setBigDecimal(3, category.getHourlyRate());
@@ -69,13 +66,11 @@ public class BillingCategoryDAO {
     }
     
     public boolean update(BillingCategory category) throws SQLException {
-        // LEGACY ANTI-PATTERN: No null checks at all - will throw NPE if category is null
         String sql = "UPDATE billing_categories SET name = ?, description = ?, hourly_rate = ? WHERE id = ?";
         
         try (Connection conn = LibertyConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            // LEGACY ANTI-PATTERN: Will throw NPE if category is null or any getters return null
             stmt.setString(1, category.getName());
             stmt.setString(2, category.getDescription());
             stmt.setBigDecimal(3, category.getHourlyRate());

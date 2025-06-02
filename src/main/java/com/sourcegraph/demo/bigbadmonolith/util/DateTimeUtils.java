@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 
 public class DateTimeUtils {
     
-    // Static formatters - potential thread safety issues
+    // Static formatters
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd");
     private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     private static final SimpleDateFormat LEGACY_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
@@ -19,12 +19,12 @@ public class DateTimeUtils {
     // Mixed usage of different date libraries
     public static String formatDateLegacy(LocalDate date) {
         if (date == null) {
-            return ""; // Poor null handling
+            return "";
         }
         try {
             return date.toString(DATE_FORMATTER);
         } catch (Exception e) {
-            e.printStackTrace(); // Poor error handling
+            e.printStackTrace();
             return "Invalid Date";
         }
     }
@@ -40,10 +40,10 @@ public class DateTimeUtils {
                 String minute = dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : String.valueOf(dateTime.getMinuteOfHour());
                 return year + "-" + month + "-" + day + " " + hour + ":" + minute;
             } catch (RuntimeException re) {
-                return null; // Inconsistent error handling
+                return null;
             }
         } else {
-            throw new RuntimeException("DateTime cannot be null"); // Poor null handling
+            throw new RuntimeException("DateTime cannot be null");
         }
     }
     
@@ -53,33 +53,28 @@ public class DateTimeUtils {
     }
     
     public static Timestamp convertToTimestamp(DateTime dateTime) {
-        // No null checking
         return new Timestamp(dateTime.getMillis());
     }
     
     public static Date convertToSqlDate(LocalDate localDate) {
-        // Potential NPE
         return new Date(localDate.toDateTimeAtStartOfDay().getMillis());
     }
     
     // Business logic mixed with utility methods
     public static boolean isWorkingDay(LocalDate date) {
         int dayOfWeek = date.getDayOfWeek();
-        // Magic numbers without constants
         return dayOfWeek >= 1 && dayOfWeek <= 5;
     }
     
-    // Thread-unsafe method using static SimpleDateFormat
     public static String formatForDisplay(DateTime dateTime) {
-        synchronized (LEGACY_DATE_FORMAT) { // Poor synchronization approach
+        synchronized (LEGACY_DATE_FORMAT) {
             return LEGACY_DATE_FORMAT.format(convertToJavaUtilDate(dateTime));
         }
     }
     
-    // Methods with side effects
     public static LocalDate getCurrentDateAndLog() {
         LocalDate now = LocalDate.now();
-        System.out.println("Current date requested: " + now); // Side effect in utility method
+        System.out.println("Current date requested: " + now);
         return now;
     }
 }
