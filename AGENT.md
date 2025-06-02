@@ -30,11 +30,7 @@ This application intentionally contains **legacy anti-patterns** and **security 
 - **Deploy to Liberty**: `./gradlew libertyDeploy`
 - **Check server status**: `./gradlew libertyStatus`
 
-## Docker Commands
-- **Build and run**: `docker-compose up --build`
-- **Run in background**: `docker-compose up -d`
-- **Stop containers**: `docker-compose down`
-- **View logs**: `docker-compose logs -f`
+
 
 ## Application URLs (when running)
 - **Main Application**: http://localhost:9080/big-bad-monolith/
@@ -50,12 +46,12 @@ This application intentionally contains **legacy anti-patterns** and **security 
 - **Scriptlet Hell**: Hundreds of lines of Java code in JSP files
 - **Direct Database Access**: JDBC connections opened in presentation layer
 - **Business Logic in JSPs**: Calculations and validations in presentation
-- **SQL Injection Vulnerability**: String concatenation in `categories.jsp`
+- **SQL Injection Vulnerabilities**: String concatenation in database queries
 - **Resource Leaks**: Database connections not properly managed
 - **No Input Validation**: Raw form parameters used directly
 
 ### DAO Layer Issues
-- **Inconsistent Null Handling**: Some DAOs check nulls, others don't
+- **Inconsistent Null Handling**: Inconsistent null checking across DAOs
 - **Mixed Error Handling**: SQLException vs RuntimeException inconsistency
 - **No Transaction Management**: Auto-commit mode for all operations
 
@@ -65,7 +61,7 @@ This application intentionally contains **legacy anti-patterns** and **security 
 
 ### Utility Classes Issues
 - **Legacy Date/Time**: Uses deprecated Joda-Time instead of java.time
-- **Thread Safety Issues**: Static SimpleDateFormat (not thread-safe)
+- **Thread Safety Issues**: Non-thread-safe implementations
 - **Magic Numbers**: Hardcoded values without constants
 
 ## File Structure
@@ -73,29 +69,25 @@ This application intentionally contains **legacy anti-patterns** and **security 
 src/main/
 ├── java/com/sourcegraph/demo/bigbadmonolith/
 │   ├── dao/                    # Data Access Objects (mixed quality)
-│   │   ├── CustomerDAO.java    # GOOD: Has null checks
-│   │   ├── UserDAO.java        # BAD: No null checking, NPE vulnerable
-│   │   ├── BillableHourDAO.java # BAD: No null checking
-│   │   └── BillingCategoryDAO.java # MIXED: Partial null checking
-│   ├── entity/                 # Entity classes (use Joda-Time)
+│   ├── entity/                 # Entity classes (legacy dependencies)
 │   ├── service/                # Service classes (tight coupling)
-│   └── util/                   # Utilities (thread safety issues)
+│   └── util/                   # Utilities (various issues)
 └── webapp/                     # JSP files (scriptlet hell)
     ├── index.jsp               # Dashboard with business logic
     ├── customers.jsp           # Customer CRUD with validation in JSP
     ├── hours.jsp               # Complex reporting logic in JSP
     ├── reports.jsp             # Advanced business calculations in JSP
-    ├── categories.jsp          # SQL INJECTION VULNERABLE
+    ├── categories.jsp          # Category management
     └── users.jsp               # Complex aggregations in JSP
 ```
 
 ## Training Objectives
 
 Trainees should learn to identify and fix:
-1. **Security vulnerabilities** (SQL injection in categories.jsp)
-2. **Null pointer exceptions** (UserDAO, BillableHourDAO)
-3. **Resource management** issues (connection leaks in JSPs)
-4. **Thread safety** problems (DateTimeUtils)
+1. **Security vulnerabilities** (SQL injection vulnerabilities)
+2. **Null pointer exceptions** (Inconsistent null handling)
+3. **Resource management** issues (connection leaks)
+4. **Thread safety** problems (Non-thread-safe implementations)
 5. **Architectural issues** (business logic in presentation layer)
 6. **Legacy dependencies** (Joda-Time migration)
 
@@ -108,7 +100,7 @@ Trainees should learn to identify and fix:
 - **Performance Tests**: Measure before/after improvements
 
 ### Refactoring Approach
-1. **Phase 1**: Fix critical security issues and NPEs
+1. **Phase 1**: Fix critical security issues and null pointer exceptions
 2. **Phase 2**: Extract business logic from JSPs to services
 3. **Phase 3**: Modernize date/time handling
 4. **Phase 4**: Implement proper MVC pattern with JAX-RS

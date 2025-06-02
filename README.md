@@ -99,15 +99,7 @@ liberty-dev.bat         # Windows
 ./gradlew libertyStop
 ```
 
-#### Docker Deployment
-```bash
-# Build and run with Docker Compose
-docker-compose up --build
 
-# Or build Docker image manually
-docker build -t big-bad-monolith .
-docker run -p 9080:9080 -p 9443:9443 big-bad-monolith
-```
 
 ### Option 2: Other Jakarta EE Application Servers
 
@@ -120,7 +112,6 @@ docker run -p 9080:9080 -p 9443:9443 big-bad-monolith
 ### Web Interface
 - **Liberty Development**: `http://localhost:9080/big-bad-monolith/`
 - **Liberty HTTPS**: `https://localhost:9443/big-bad-monolith/`
-- **Docker**: `http://localhost:9080/big-bad-monolith/`
 
 ## Web Interface
 
